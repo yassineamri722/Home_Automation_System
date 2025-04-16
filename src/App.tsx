@@ -10,14 +10,15 @@ import Badges from "./pages/UiElements/Badges";
 import Avatars from "./pages/UiElements/Avatars";
 import Buttons from "./pages/UiElements/Buttons";
 import LineChart from "./pages/Charts/LineChart";
-import Room from "./pages/Charts/Room";
+import Room1 from "./pages/Forms/Room1";
+import Room2 from "./pages/Forms/Room2";
 import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
 import FormElements from "./pages/Forms/FormElements";
-import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+
 
 export default function App() {
   return (
@@ -32,7 +33,7 @@ export default function App() {
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
-            <Route path="/room1" element={<NotFound/>} />
+
 
             {/* Forms */}
             <Route path="/form-elements" element={<FormElements />} />
@@ -50,7 +51,8 @@ export default function App() {
 
             {/* Charts */}
             <Route path="/line-chart" element={<LineChart />} />
-            <Route path="/Room" element={<Room />} />
+            <Route path="/Room1" element={<Room1 />} />
+            <Route path="/Room2" element={<Room2 />} />
           </Route>
 
           {/* Auth Layout */}

@@ -1,10 +1,10 @@
 // src/pages/OtherPages/NotFound.tsx
 import React from "react";
-import LiveStream from "../../components/room/LiveStream";
-import TemperatureDisplay from "../../components/room/TemperatureDisplay";
-import PresenceIndicator from "../../components/room/PresenceIndicator";
+import LiveStream from "../../components/room/LiveStream.tsx";
+import TemperatureDisplay from "../../components/room/TemperatureDisplay.tsx";
+import PresenceIndicator from "../../components/room/PresenceIndicator.tsx";
 
-const NotFound = () => {
+const Room1 = () => {
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-3xl font-bold">Room 1 Monitoring</h1>
@@ -19,4 +19,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default Room1;

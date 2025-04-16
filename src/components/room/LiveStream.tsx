@@ -1,7 +1,8 @@
 // src/components/LiveStream.jsx
 import React from "react";
 
-const LiveStream = () => {
+const LiveStream = () =>
+{
   return (
     <div className="w-full aspect-video bg-black rounded-2xl shadow-lg overflow-hidden">
       {/* Example using iframe or video src */}
