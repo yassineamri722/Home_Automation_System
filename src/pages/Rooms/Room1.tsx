@@ -1,8 +1,10 @@
 import LiveStream from "../../components/room/LiveStream";
 import TemperatureDisplay from "../../components/room/TemperatureDisplay";
 import PresenceIndicator from "../../components/room/PresenceIndicator";
-import DoorStatus from "../../components/room/DoorStatus";
-import WindowStatus from "../../components/room/WindowStatus";
+
+import DisplayLight from "../../components/room/DisplayLight"; 
+import DoorToggle from "../../components/room/DoorToggle";
+import WindowToggle from "../../components/room/WindowToggle";
 
 const Room1 = () => {
   return (
@@ -14,8 +16,10 @@ const Room1 = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <TemperatureDisplay temperature={23} />
         <PresenceIndicator isPresent={true} />
-        <DoorStatus isOpen={true} />
-        <WindowStatus isOpen={false} />
+        <DoorToggle/>
+        <WindowToggle/>
+        <DisplayLight />
+        
       </div>
     </div>
   );

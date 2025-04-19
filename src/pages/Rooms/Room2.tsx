@@ -1,8 +1,9 @@
-import LiveStream from "../../components/room/LiveStream.tsx";
-import TemperatureDisplay from "../../components/room/TemperatureDisplay.tsx";
-import PresenceIndicator from "../../components/room/PresenceIndicator.tsx";
-import DoorStatus from "../../components/room/DoorStatus.tsx";
-import WindowStatus from "../../components/room/WindowStatus.tsx";
+import LiveStream from "../../components/room/LiveStream";
+import TemperatureDisplay from "../../components/room/TemperatureDisplay";
+import PresenceIndicator from "../../components/room/PresenceIndicator";
+import DisplayLight from "../../components/room/DisplayLight"; // 👈 Ajouté
+import DoorToggle from "../../components/room/DoorToggle";
+import WindowToggle from "../../components/room/WindowToggle";
 
 const Room2 = () => {
   return (
@@ -12,10 +13,12 @@ const Room2 = () => {
       <LiveStream />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <TemperatureDisplay temperature={22.5} />
+        <TemperatureDisplay temperature={23} />
         <PresenceIndicator isPresent={true} />
-        <DoorStatus isOpen={false} />
-        <WindowStatus isOpen={true} />
+        <DoorToggle/>
+        <WindowToggle/>
+        <DisplayLight />
+        
       </div>
     </div>
   );

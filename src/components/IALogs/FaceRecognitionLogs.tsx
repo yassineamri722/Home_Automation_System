@@ -1,5 +1,5 @@
-
 import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 
 interface FaceLog {
   timestamp: string;
@@ -8,27 +8,62 @@ interface FaceLog {
   status: "AUTHORIZED" | "UNAUTHORIZED";
 }
 
-const generateFakeLog = (): FaceLog => {
-  const now = new Date().toISOString();
-  const authorized = Math.random() < 0.7;
-  return {
-    timestamp: now,
-    imageUrl: `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70 + 1)}`, // fake avatar
-    personName: authorized ? "John Doe" : "Unknown",
-    status: authorized ? "AUTHORIZED" : "UNAUTHORIZED",
-  };
-};
+// Connexion au WebSocket du backend Flask
+const socket = io("http://localhost:5000");
 
 const FaceRecognitionLogs: React.FC = () => {
   const [logs, setLogs] = useState<FaceLog[]>([]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newLog = generateFakeLog();
-      setLogs(prev => [newLog, ...prev].slice(0, 20));
-    }, 4000);
+  // Fonction pour récupérer les logs depuis localStorage
+  const fetchLogsFromLocalStorage = () => {
+    const logsFromStorage = localStorage.getItem("faceRecognitionLogs");
+    if (logsFromStorage) {
+      try {
+        return JSON.parse(logsFromStorage);
+      } catch (error) {
+        console.error("Erreur de parsing des logs depuis localStorage", error);
+        return []; // Retourne un tableau vide si les données sont invalides
+      }
+    }
+    return [];
+  };
 
-    return () => clearInterval(interval);
+  // Fonction pour stocker un log dans localStorage
+  const saveLogToLocalStorage = (newLog: FaceLog) => {
+    const currentLogs = fetchLogsFromLocalStorage();
+    const updatedLogs = [newLog, ...currentLogs].slice(0, 20); // Limiter à 20 logs
+    localStorage.setItem("faceRecognitionLogs", JSON.stringify(updatedLogs));
+    setLogs(updatedLogs); // Mettre à jour l'état avec les logs
+  };
+
+  useEffect(() => {
+    // Charger les logs initiaux depuis localStorage lors du montage du composant
+    const initialLogs = fetchLogsFromLocalStorage();
+    setLogs(initialLogs);
+
+    // Lorsque l'événement 'face_recognized' est reçu du backend
+    socket.on("face_recognized", (data: any) => {
+      // Vérifie si les données nécessaires existent
+      if (!data.image || !data.name) {
+        console.error("Données de reconnaissance faciale invalides:", data);
+        return; // Ne pas traiter si les données sont incomplètes
+      }
+
+      const log: FaceLog = {
+        timestamp: new Date().toISOString(), // ou utiliser `data.timestamp` si disponible
+        imageUrl: `data:image/jpeg;base64,${data.image}`, // Image encodée en base64
+        personName: data.name || "Unknown", // Si le nom est fourni
+        status: data.name && data.name !== "Unknown" ? "AUTHORIZED" : "UNAUTHORIZED", // Autorisé si un nom est trouvé
+      };
+
+      // Sauvegarder le log dans localStorage et mettre à jour l'état
+      saveLogToLocalStorage(log);
+    });
+
+    // Nettoyer l'écouteur lorsqu'on quitte le composant
+    return () => {
+      socket.off("face_recognized");
+    };
   }, []);
 
   return (
@@ -37,11 +72,16 @@ const FaceRecognitionLogs: React.FC = () => {
       <div className="space-y-4">
         {logs.map((log, index) => (
           <div key={index} className="flex items-center gap-4 border-b pb-4">
-            <img
-              src={log.imageUrl}
-              alt="Captured face"
-              className="w-16 h-16 rounded-full border"
-            />
+            {/* Vérification de l'image avant l'affichage */}
+            {log.imageUrl ? (
+              <img
+                src={log.imageUrl}
+                alt="Captured face"
+                className="w-16 h-16 rounded-full border"
+              />
+            ) : (
+              <span>Image invalide</span> // Message d'erreur si l'image est invalide
+            )}
             <div>
               <p className="font-semibold">{log.personName}</p>
               <p className="text-sm text-gray-500">
